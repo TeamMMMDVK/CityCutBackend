@@ -72,8 +72,8 @@ class IAmTestingMyselfTest {
     }
     @Test
     void yetAnotherTest() {
-        String str = "Hello";
+        String str = "Hello0";
 
-        assertEquals("Hello", str);
+        assertEquals("Hello0", str);
     }
 }
