@@ -2,10 +2,12 @@ name: Qodana
 on:
   workflow_dispatch:
   pull_request:
-  push:
     branches: # Specify your branches here
-      - main # The 'main' branch
-      - 'releases/*' # The release branches
+    - main # The 'main' branch
+    - 'releases/*' # The release branches
+ #Udkommenteret, da vi ikke ønsker QODANA på ethvert push. Ellers lad os angive specifikke branches
+   #push:
+
 
 jobs:
   qodana:
