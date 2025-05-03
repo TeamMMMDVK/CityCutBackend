@@ -70,4 +70,10 @@ class IAmTestingMyselfTest {
         //Assert
         assertEquals(expectedNum, testObject.getNum2());
     }
+    @Test
+    void yetAnotherTest() {
+        String str = "Hello";
+
+        assertEquals("Hello", str);
+    }
 }
