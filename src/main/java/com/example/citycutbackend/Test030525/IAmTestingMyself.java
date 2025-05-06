@@ -9,8 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class IAmTestingMyself {
     private String name;
-    private int num;
-    private int num2;
+    private int num = 5;
+    private int num2 = 7;
 
     public int mathing() {
         return num+num2;

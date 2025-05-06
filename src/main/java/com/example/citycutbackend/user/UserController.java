@@ -42,24 +42,26 @@ public class UserController {
 
     //----------------------------------------
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserModel user){
-        UserModel savedUser = null; //variabel som bliver brugt til at gemme den nye user efter database operationen
-        ResponseEntity response = null; //variabel som bliver brugt til at returnere et passende HTTP response
+//    @PostMapping("/register")
+//    public ResponseEntity<String> registerUser(@RequestBody UserModel user){
+//        UserModel savedUser = null; //variabel som bliver brugt til at gemme den nye user efter database operationen
+//        ResponseEntity response = null; //variabel som bliver brugt til at returnere et passende HTTP response
+//
+//        try {
+//            String hashPwd = passwordEncoder.encode(user.getPassword());//password bliver hashet (omdannet) så den ikke gemmes i klartekst
+//            user.setPassword(hashPwd);//den hashede password bliver sat på user
+//            savedUser = userRepository.save(user);//data gemmes i db
+//            if(savedUser.getId() > 0) {
+//                response = ResponseEntity.status(HttpStatus.CREATED)
+//                        .body("User details are successfully registered");
+//            }
+//        } catch (Exception e) {
+//            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("An exception occured due to: "+e.getMessage());
+//        }
+//        return response;
+//
+//    }
 
-        try {
-            String hashPwd = passwordEncoder.encode(user.getPassword());//password bliver hashet (omdannet) så den ikke gemmes i klartekst
-            user.setPassword(hashPwd);//den hashede password bliver sat på user
-            savedUser = userRepository.save(user);//data gemmes i db
-            if(savedUser.getId() > 0) {
-                response = ResponseEntity.status(HttpStatus.CREATED)
-                        .body("User details are successfully registered");
-            }
-        } catch (Exception e) {
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occured due to: "+e.getMessage());
-        }
-        return response;
 
-    }
 }
