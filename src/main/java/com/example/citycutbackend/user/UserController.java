@@ -1,5 +1,7 @@
 package com.example.citycutbackend.user;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Getter
+@Setter
 @RestController
 public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     private UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
@@ -47,7 +50,7 @@ public class UserController {
         try {
             String hashPwd = passwordEncoder.encode(user.getPassword());//password bliver hashet (omdannet) så den ikke gemmes i klartekst
             user.setPassword(hashPwd);//den hashede password bliver sat på user
-            savedUser = UserRepository.save(user);//data gemmes i db
+            savedUser = userRepository.save(user);//data gemmes i db
             if(savedUser.getId() > 0) {
                 response = ResponseEntity.status(HttpStatus.CREATED)
                         .body("User details are successfully registered");
