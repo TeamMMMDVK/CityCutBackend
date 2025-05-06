@@ -40,10 +40,10 @@ public class ProjectSecurityConfig {
                 //Det er en sikkerhedsfunktion, der skal konfigureres korrekt for at tillade legitim kommunikation mellem domæner.
                 //.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/contact", "/register").permitAll() //dette betyder at alle kan tilgå disse uden login TODO: tilføj rette endpoints
-                        .requestMatchers("/myaccount").hasRole("ADMIN") //her skal man være logget ind og have den rette rolle, og ellers TODO: tilføj rette endpoints
+                        .requestMatchers("/test1").permitAll() //dette betyder at alle kan tilgå denne side uden login TODO: tilføj rette endpoints
+                        .requestMatchers("/test3").hasRole("ADMIN") //her skal man være logget ind og have den rette rolle, og ellers TODO: tilføj rette endpoints
                         //vil man blive dirigeret til login side
-                        .requestMatchers("/mybalance").hasAnyRole("ADMIN", "SALES")
+                        .requestMatchers("/test2").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
                 );
         http.formLogin(Customizer.withDefaults()); //Disse to aktiverer en standard login-side og basic authentification
         http.httpBasic(Customizer.withDefaults());
