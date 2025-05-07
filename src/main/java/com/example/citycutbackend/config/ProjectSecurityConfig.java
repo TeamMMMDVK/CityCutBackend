@@ -8,6 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -38,9 +39,9 @@ public class ProjectSecurityConfig {
                 //til at definere reglerne
                 //CORS (Cross-Origin Resource Sharing) er en browser-mekanisme, der kontrollerer, hvordan ressourcer kan deles mellem forskellige domæner.
                 //Det er en sikkerhedsfunktion, der skal konfigureres korrekt for at tillade legitim kommunikation mellem domæner.
-                //.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request) -> request
-                        .requestMatchers("/test1").permitAll() //dette betyder at alle kan tilgå denne side uden login TODO: tilføj rette endpoints
+                        .requestMatchers("/test1","/register").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
                         .requestMatchers("/test3").hasRole("ADMIN") //her skal man være logget ind og have den rette rolle, og ellers TODO: tilføj rette endpoints
                         //vil man blive dirigeret til login side
                         .requestMatchers("/test2").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints

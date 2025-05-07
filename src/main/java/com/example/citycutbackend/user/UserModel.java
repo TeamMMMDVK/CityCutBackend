@@ -17,16 +17,16 @@ public class UserModel {
     @Column(unique = true)
     private String email;
     private String password;
-    private int roleId;
+    private String role;
 
     public UserModel() {
        //tom konstruktør
     }
 
-    public UserModel(String name, String email, String password, int roleId) {
+    public UserModel(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.roleId = roleId;
+        this.role = role;
     }
 }
