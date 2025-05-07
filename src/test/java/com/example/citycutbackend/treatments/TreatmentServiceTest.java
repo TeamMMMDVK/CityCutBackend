@@ -19,6 +19,7 @@ class TreatmentServiceTest {
 
     @Autowired
     TreatmentRepository treatmentRepository;
+
     @Test
     void getAllTreatmentsFromDB() {
         //Arrange
@@ -30,14 +31,16 @@ class TreatmentServiceTest {
         t2.setTitle("Treatment 2");
         t2.setDescription("I am a treatment 2");
 
-
         //Act
         treatmentRepository.save(t1);
         treatmentRepository.save(t2);
         list.addAll(treatmentService.getAllTreatmentsFromDB());
 
-
         //Assert
-        assertEquals(2, list.size());
+        assertEquals(2, list.size()); //List should've grown by 2 after adding treatments
+        assertEquals(t1.getTitle(), list.get(0).getTitle()); //Checking index[x] treatment title
+        assertEquals(t2.getTitle(), list.get(1).getTitle());
+        assertEquals(t1.getDescription(), list.get(0).getDescription());
+        assertEquals(t2.getDescription(), list.get(1).getDescription());//Checking index[x] treatment description
     }
 }
