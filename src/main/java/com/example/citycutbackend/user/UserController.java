@@ -1,5 +1,6 @@
 package com.example.citycutbackend.user;
 
+import com.example.citycutbackend.config.JwtService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @RestController
@@ -19,9 +22,11 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
+    private JwtService jwtService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     //-----------TEST ENDPOINTS--------------

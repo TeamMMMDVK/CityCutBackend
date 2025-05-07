@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 //denne klasse / filter fanger hver request og tjekker om der er gyldig jwt med
 @Component
-public class JwtAuthFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
@@ -51,4 +52,4 @@ public class JwtAuthFilter {
         filterChain.doFilter(request, response);
     }
 }
-}
+
