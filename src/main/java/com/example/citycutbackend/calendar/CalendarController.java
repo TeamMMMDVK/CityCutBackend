@@ -14,16 +14,22 @@ public class CalendarController {
     @Autowired
     private CalendarService calendarService;
 
-    @GetMapping("/availability/{year}/{month}")
+    @PostMapping("/availability/{year}/{month}")
     public List<Calendar> getAvailability(@PathVariable int year, @PathVariable int month,
-                                          @RequestParam("stylistId") int stylistId) {
-        return calendarService.getAvailabilityForMonth(year, month, stylistId);
+                                          @RequestBody CheckAvailabilityDTO request) {
+        return calendarService.getAvailabilityForMonth(
+                year,
+                month,
+                request.getStylistId(),
+                request.getSelectedTreatmentIds()
+        );
     }
 
-    @GetMapping("/day/{date}")
-    public List<Calendar> getTimeslots(@PathVariable String date,
-                                       @RequestParam("stylistId") int stylistId) {
-        LocalDate localDate = LocalDate.parse(date);
-        return calendarService.getTimeslotsForDay(localDate, stylistId);
+        @PostMapping("/check-availability")
+        public boolean checkAvailability(@RequestParam int stylistId,
+                                         @RequestParam LocalDate date,
+                                         @RequestParam("selectedTreatmentIds") List<Integer> selectedTreatmentIds) {
+            return calendarService.checkAvailabilityForDay(stylistId, date, selectedTreatmentIds);
+        }
     }
 }
