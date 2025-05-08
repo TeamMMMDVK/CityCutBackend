@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @Getter
 @Setter
+@RequestMapping("/api/v1/user")
 @RestController
-@RequestMapping("api/v1/user")
 public class UserController {
 
     private UserService userService;

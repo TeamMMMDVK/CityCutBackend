@@ -36,9 +36,9 @@ public class ProjectSecurityConfig {
                 //CORS (Cross-Origin Resource Sharing) er en browser-mekanisme, der kontrollerer, hvordan ressourcer kan deles mellem forskellige domæner.
                 //Det er en sikkerhedsfunktion, der skal konfigureres korrekt for at tillade legitim kommunikation mellem domæner.
                 .authorizeHttpRequests((request) -> request
-                                .requestMatchers("/test1", "/register","/index.html","/login").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
-                                .requestMatchers("/test2").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
-                                .requestMatchers("/test3").hasRole("ADMIN") //her skal man være logget ind og have den rette rolle, og ellers TODO: tilføj rette endpoints
+                                .requestMatchers("/api/v1/user/test1", "/api/v1/user/register","/index.html","/api/v1/user/login").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
+                                .requestMatchers("/api/v1/user/test2").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
+                                .requestMatchers("/api/v1/user/test3").hasRole("ADMIN") //her skal man være logget ind og have den rette rolle, og ellers TODO: tilføj rette endpoints
                         //vil man blive dirigeret til login side
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
