@@ -1,5 +1,6 @@
 package com.example.citycutbackend.treatments;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,5 +18,10 @@ public class TreatmentController {
     @GetMapping("")
     public List<Treatment> getAllTreatmentsFromDB() {
         return treatmentService.getAllTreatmentsFromDB();
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Treatment> addNewTreatment(@RequestBody Treatment treatment){
+        return ResponseEntity.ok(treatmentService.addNewTreatment(treatment));
     }
 }
