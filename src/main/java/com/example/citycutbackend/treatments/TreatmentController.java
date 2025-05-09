@@ -6,7 +6,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("api/v1/treatment")
+@RequestMapping("api/v1/treatments")
 public class TreatmentController {
     private final TreatmentService treatmentService;
 
@@ -14,7 +14,7 @@ public class TreatmentController {
         this.treatmentService = treatmentService;
     }
 
-    @GetMapping("/treatments")
+    @GetMapping("")
     public List<Treatment> getAllTreatmentsFromDB() {
         return treatmentService.getAllTreatmentsFromDB();
     }
