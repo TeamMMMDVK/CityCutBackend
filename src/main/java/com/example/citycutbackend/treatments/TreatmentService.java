@@ -15,6 +15,7 @@ public class TreatmentService {
     }
 
     public List<Treatment> getAllTreatmentsFromDB() {
-        return treatmentRepository.findAll();
+        List<Treatment> list = treatmentRepository.findAll();
+        return list;
     }
 }
