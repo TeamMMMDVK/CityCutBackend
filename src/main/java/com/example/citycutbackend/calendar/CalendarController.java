@@ -14,9 +14,10 @@ public class CalendarController {
     @Autowired
     private CalendarService calendarService;
 
+
     @PostMapping("/availability/{year}/{month}")
-    public List<Calendar> getAvailability(@PathVariable int year, @PathVariable int month,
-                                          @RequestBody CheckAvailabilityDTO request) {
+    public List<CheckAvailabilityDTO> getAvailability(@PathVariable int year, @PathVariable int month,
+                                                      @RequestBody CheckAvailabilityDTO request) {
         return calendarService.getAvailabilityForMonth(
                 year,
                 month,
@@ -24,12 +25,10 @@ public class CalendarController {
                 request.getSelectedTreatmentIds()
         );
     }
-
         @PostMapping("/check-availability")
         public boolean checkAvailability(@RequestParam int stylistId,
                                          @RequestParam LocalDate date,
-                                         @RequestParam("selectedTreatmentIds") List<Integer> selectedTreatmentIds) {
-            return calendarService.checkAvailabilityForDay(stylistId, date, selectedTreatmentIds);
+                                         @RequestBody CheckAvailabilityDTO request) {
+            return calendarService.checkAvailabilityForDay(stylistId, date, request);
         }
     }
-}
