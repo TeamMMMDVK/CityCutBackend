@@ -28,23 +28,34 @@ public class UserService {
     }
 
     public ResponseEntity<String> registerUser(UserModel user) {
-        UserModel savedUser = null; //variabel som bliver brugt til at gemme den nye user efter database operationen
-        ResponseEntity response = null; //variabel som bliver brugt til at returnere et passende HTTP response
 
+        ResponseEntity response = null; //variabel som bliver brugt til at returnere et passende HTTP response
         try {
+            Optional<UserModel> existingUser = userRepository.findByEmail(user.getEmail());
+
+            if (existingUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("En bruger med denne email findes allerede");
+            }
+
             String hashPwd = passwordEncoder.encode(user.getPassword());//password bliver hashet (omdannet) så den ikke gemmes i klartekst
             user.setPassword(hashPwd);//den hashede password bliver sat på user
-            savedUser = userRepository.save(user);//data gemmes i db
+
+            UserModel savedUser = userRepository.save(user); //data gemmes i db
+
             if (savedUser.getId() > 0) {
                 response = ResponseEntity.status(HttpStatus.CREATED)
-                        .body("User details are successfully registered");
+                        .body("Bruger blev succesfuldt oprettet");
+            } else {
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Bruger blev ikke oprettet");
             }
         } catch (Exception e) {
             response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occured due to: " + e.getMessage());
+                    .body("Der opstod en fejl: " + e.getMessage());
         }
-        return response;
 
+        return response;
 
     }
 
