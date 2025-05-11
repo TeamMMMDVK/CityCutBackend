@@ -16,8 +16,6 @@ public class Treatment {
 
     private String title;
     private String description;
-
-    @Column(name = "timeslotAmount") // Explicitly map the Java field to the database column
     private int timeslotAmount;
 
     private double price;
