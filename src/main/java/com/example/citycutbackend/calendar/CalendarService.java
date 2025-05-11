@@ -48,7 +48,9 @@ public class CalendarService {
     public boolean checkAvailabilityForDay(int stylistId, LocalDate date, CheckAvailabilityDTO request) {
         int totalTime = calculateTotalTime(request.getSelectedTreatmentIds());
 
-        if (date.getDayOfWeek().getValue() >= 6) {
+        // closed monday and sunday
+        int day = date.getDayOfWeek().getValue();
+        if (day == 1 || day == 7) {
             return false;
         }
 
