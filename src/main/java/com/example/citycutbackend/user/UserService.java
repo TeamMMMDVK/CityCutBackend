@@ -64,8 +64,8 @@ public class UserService {
         if (userOpt.isPresent()) {
             UserModel user = userOpt.get();
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                String token = jwtService.generateToken(user.getEmail());
-                return ResponseEntity.ok(new LoginResponse(token));
+                String token = jwtService.generateToken(user.getEmail(), user.getRole());
+                return ResponseEntity.ok(new LoginResponse(token, user.getRole()));
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
