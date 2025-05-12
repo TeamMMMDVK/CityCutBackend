@@ -20,7 +20,7 @@ public class TreatmentController {
         return treatmentService.getAllTreatmentsFromDB();
     }
 
-    @PostMapping("")
+    @PostMapping("/add")
     public ResponseEntity<Treatment> addNewTreatment(@RequestBody Treatment treatment){
         return ResponseEntity.ok(treatmentService.addNewTreatment(treatment));
     }
