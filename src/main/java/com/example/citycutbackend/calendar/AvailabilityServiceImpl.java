@@ -2,8 +2,6 @@ package com.example.citycutbackend.calendar;
 
 import com.example.citycutbackend.treatments.Treatment;
 import com.example.citycutbackend.treatments.TreatmentRepository;
-import com.example.citycutbackend.treatments.TreatmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,15 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CalendarService {
+public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final TreatmentRepository treatmentRepository;
 
-    public CalendarService(TreatmentRepository treatmentRepository) {
+    public AvailabilityServiceImpl(TreatmentRepository treatmentRepository) {
         this.treatmentRepository = treatmentRepository;
     }
 
-    public List<CheckAvailabilityDTO> getAvailabilityForMonth(int year, int month, int stylistId, List<Integer> selectedTreatmentIds) {
+
+    @Override
+    public List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId, List<Integer> selectedTreatmentIds, String date) {
+        return null;
+    }
+
+    @Override
+    public List<CheckAvailabilityDTO> getAvailableTimeslotsForMonth(int year, int month, int stylistId, List<Integer> selectedTreatmentIds) {
         YearMonth yearMonth = YearMonth.of(year, month);
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
@@ -35,6 +40,7 @@ public class CalendarService {
 
         return result;
     }
+
 
     public int calculateTotalTime(List<Integer> selectedTreatmentIds) {
         List<Treatment> treatments = treatmentRepository.findAllById(selectedTreatmentIds);
