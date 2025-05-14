@@ -49,7 +49,7 @@ public class ProjectSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:63342","https://localhost:8080")); // Tilladte domæner
+        configuration.setAllowedOrigins(List.of("http://localhost:63342","https://localhost:8080")); // Tilladte domæner
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Tilladte metoder
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Tilladte headers
         configuration.setAllowCredentials(true); // Tillad credentials (f.eks. cookies, autorisation)

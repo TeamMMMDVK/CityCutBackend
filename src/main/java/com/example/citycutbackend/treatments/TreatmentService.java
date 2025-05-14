@@ -23,7 +23,7 @@ public class TreatmentService {
     }
 
     public Treatment addNewTreatment(Treatment treatment) {
-        logger.info("Adding new treatment to the DB: " + String.valueOf(treatment));
+        logger.info("Adding new treatment to the DB: " + treatment);
         return treatmentRepository.save(treatment);
     }
 }
