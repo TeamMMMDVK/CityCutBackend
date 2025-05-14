@@ -12,13 +12,13 @@ import java.util.List;
 public class CalendarController {
 
     @Autowired
-    private CalendarService calendarService;
+    private AvailabilityServiceImpl availabilityService;
 
 
     @PostMapping("/availability/{year}/{month}")
     public List<CheckAvailabilityDTO> getAvailability(@PathVariable int year, @PathVariable int month,
                                                       @RequestBody CheckAvailabilityDTO request) {
-        return calendarService.getAvailabilityForMonth(
+        return availabilityService.getAvailableTimeslotsForMonth(
                 year,
                 month,
                 request.getStylistId(),
@@ -29,6 +29,6 @@ public class CalendarController {
         public boolean checkAvailability(@RequestParam int stylistId,
                                          @RequestParam LocalDate date,
                                          @RequestBody CheckAvailabilityDTO request) {
-            return calendarService.checkAvailabilityForDay(stylistId, date, request);
+            return availabilityService.checkAvailabilityForDay(stylistId, date, request);
         }
     }

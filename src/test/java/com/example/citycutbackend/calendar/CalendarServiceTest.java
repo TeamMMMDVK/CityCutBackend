@@ -12,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class CalendarServiceTest {
     private JwtService jwtService;
 
     @Autowired
-    private CalendarService calendarService;
+    private AvailabilityServiceImpl availabilityService;
 
     @MockBean
     private TreatmentRepository treatmentRepository;
@@ -60,9 +59,9 @@ public class CalendarServiceTest {
 
         when(treatmentRepository.findAllById(selectedTreatmentIds)).thenReturn(Arrays.asList(treatment1, treatment2));
 
-        List<CheckAvailabilityDTO> availability = calendarService.getAvailabilityForMonth(2025, 5, stylistId, selectedTreatmentIds);
+        List<CheckAvailabilityDTO> availability = availabilityService.getAvailableTimeslotsForMonth(2025, 5, stylistId, selectedTreatmentIds);
 
-        int totalTimeForTreatments = calendarService.calculateTotalTime(selectedTreatmentIds);
+        int totalTimeForTreatments = availabilityService.calculateTotalTime(selectedTreatmentIds);
         System.out.println("Total Time for Selected Treatments: " + totalTimeForTreatments + " minutes");
 
         assertNotNull(availability);
@@ -86,7 +85,7 @@ public class CalendarServiceTest {
 
         when(treatmentRepository.findAllById(selectedTreatmentIds)).thenReturn(Arrays.asList(treatment1, treatment2));
 
-        int totalTime = calendarService.calculateTotalTime(selectedTreatmentIds);
+        int totalTime = availabilityService.calculateTotalTime(selectedTreatmentIds);
         System.out.println("Total Time: " + totalTime + " minutes");
 
         assertEquals(90, totalTime);
@@ -108,7 +107,7 @@ public class CalendarServiceTest {
 
         when(treatmentRepository.findAllById(selectedTreatmentIds)).thenReturn(Arrays.asList(treatment1, treatment2));
 
-        boolean isAvailable = calendarService.checkAvailabilityForDay(stylistId, date, new CheckAvailabilityDTO(stylistId, selectedTreatmentIds, date.toString(), false));
+        boolean isAvailable = availabilityService.checkAvailabilityForDay(stylistId, date, new CheckAvailabilityDTO(stylistId, selectedTreatmentIds, date.toString(), false));
         System.out.println("Availability for " + date + ": " + (isAvailable ? "Available" : "Not Available"));
 
         assertTrue(isAvailable);
