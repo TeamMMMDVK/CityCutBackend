@@ -1,11 +1,14 @@
 package com.example.citycutbackend.treatments;
 
+import com.example.citycutbackend.config.JwtAuthFilter;
+import com.example.citycutbackend.config.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ActiveProfiles("test")
 class TreatmentServiceTest {
+
+    //For at test kan køre korrekt, må jeg lave Mock af disse bean ifm jwt ellers
+    //vil det ikke compile korrekt. Når test kører så loades hele applikationen nemlig,
+    //også sikkerhed, og disse sikkerheds-beans mangler ....derfor mockes de
+    @MockBean
+    private JwtAuthFilter jwtAuthFilter;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     TreatmentService treatmentService;
