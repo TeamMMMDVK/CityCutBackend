@@ -1,5 +1,7 @@
 package com.example.citycutbackend.calendar;
 
+import com.example.citycutbackend.config.JwtAuthFilter;
+import com.example.citycutbackend.config.JwtService;
 import com.example.citycutbackend.treatments.Treatment;
 import com.example.citycutbackend.treatments.TreatmentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +19,18 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest()
+@SpringBootTest
 @ActiveProfiles("test")
 public class CalendarServiceTest {
+
+    //For at test kan køre korrekt, må jeg lave Mock af disse bean ifm jwt ellers
+    //vil det ikke compile korrekt. Når test kører så loades hele applikationen nemlig,
+    //også sikkerhed, og disse sikkerheds-beans mangler ....derfor mockes de
+    @MockBean
+    private JwtAuthFilter jwtAuthFilter;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private CalendarService calendarService;

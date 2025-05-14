@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Login med JWT kun til test!!!!!!!!!!!!!!!</title>
+</head>
+<body>
+<h2>Login</h2>
+<form id="loginForm">
+  <label for="email">Email:</label><br>
+  <input type="email" id="email" required><br>
+  <label for="password">Adgangskode:</label><br>
+  <input type="password" id="password" required><br><br>
+  <button type="submit">Log ind</button>
+</form>
+
+<hr>
+
+<button onclick="hentData('/api/v1/user/test2')">Hent /test2</button>
+<button onclick="hentData('/api/v1/user/test3')">Hent /test3</button>
+
+<pre id="output"></pre>
+
+<script>
+  const loginForm = document.getElementById('loginForm');
+  const output = document.getElementById('output');
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const response = await fetch('http://localhost:8081/api/v1/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      output.textContent = "Login lykkedes. Token gemt.";
+    } else {
+      output.textContent = "Login fejlede.";
+    }
+  });
+
+  async function hentData(endpoint) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      output.textContent = "Du er ikke logget ind.";
+      return;
+    }
+
+    const response = await fetch(`http://localhost:8081${endpoint}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+
+    const text = await response.text();
+    output.textContent = response.ok ? text : `Fejl: ${response.status} - ${text}`;
+  }
+</script>
+</body>
+</html>
