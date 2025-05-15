@@ -24,4 +24,5 @@ public class Timeslot {
     @JoinColumn(name = "booking_id")
     private Booking booking;
     boolean isAvailable;
+    int duration;
 }

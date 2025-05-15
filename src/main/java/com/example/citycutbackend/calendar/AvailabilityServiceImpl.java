@@ -8,21 +8,54 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final TreatmentRepository treatmentRepository;
+    private final TimeslotRepository timeslotRepository;
 
-    public AvailabilityServiceImpl(TreatmentRepository treatmentRepository) {
+    public AvailabilityServiceImpl(TreatmentRepository treatmentRepository, TimeslotRepository timeslotRepository) {
         this.treatmentRepository = treatmentRepository;
+        this.timeslotRepository = timeslotRepository;
     }
 
 
     @Override
     public List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId, List<Integer> selectedTreatmentIds, String date) {
-        return null;
+        int totalAmountOfTimeslotsNeeded = 0;
+        for (int id : selectedTreatmentIds) {
+            Optional<Treatment> optionalTreatment = treatmentRepository.findById(id);
+            if (optionalTreatment.isPresent()) {
+                Treatment treatment = optionalTreatment.get();
+                totalAmountOfTimeslotsNeeded += treatment.getTimeslotAmount();
+            }
+        }
+        List<Timeslot> allAvailableTimeslotsForDay = timeslotRepository.fetchAllAvailableTimeslotsForDay(LocalDate.parse(date));
+        List<AvailableTimeslotDTO> availableTimeslots = new ArrayList<>();
+
+        if (totalAmountOfTimeslotsNeeded == 1) return allAvailableTimeslotsForDay.stream().map(timeslot ->
+                new AvailableTimeslotDTO(timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
+
+
+        for (int i = 0; i <= allAvailableTimeslotsForDay.size() - totalAmountOfTimeslotsNeeded; i++) {
+            Timeslot currentTimeslot = allAvailableTimeslotsForDay.get(i);
+            boolean isNextTimeslotRightAfterCurrent = false;
+            for (int j = 1; j < totalAmountOfTimeslotsNeeded; j++) {
+               Timeslot toCheck = allAvailableTimeslotsForDay.get(i + j);
+                isNextTimeslotRightAfterCurrent = toCheck.getTime().equals(currentTimeslot.getTime().plusMinutes(30 * j));
+                if(!isNextTimeslotRightAfterCurrent) break;
+            }
+            if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getDate(),
+                    currentTimeslot.getTime()));
+
+        }
+
+        return availableTimeslots;
     }
+
 
     @Override
     public List<CheckAvailabilityDTO> getAvailableTimeslotsForMonth(int year, int month, int stylistId, List<Integer> selectedTreatmentIds) {
