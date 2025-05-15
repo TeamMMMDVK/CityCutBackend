@@ -75,4 +75,8 @@ class UserServiceTest {
         assertEquals(expectedResponseStatus,actualResponseStatus);
         assertEquals(expectedResponseBody,actualResponseBody);
     }
+
+    @Test
+    void login() {
+    }
 }

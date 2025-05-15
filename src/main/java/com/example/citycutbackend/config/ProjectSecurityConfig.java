@@ -37,7 +37,7 @@ public class ProjectSecurityConfig {
                 //Det er en sikkerhedsfunktion, der skal konfigureres korrekt for at tillade legitim kommunikation mellem domæner.
                 .authorizeHttpRequests((request) -> request
                                 .requestMatchers("/api/v1/user/test1", "/api/v1/user/register","/index.html","/api/v1/user/login",
-                                        "/api/v1/treatments/").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
+                                        "/api/v1/treatments").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
                                 .requestMatchers("/api/v1/treatments/add").hasRole("ADMIN") //TODO: tilføj rette endpoints
                                 .requestMatchers("/api/v1/booking").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
                 )
