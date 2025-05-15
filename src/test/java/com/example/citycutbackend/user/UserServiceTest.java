@@ -77,6 +77,42 @@ class UserServiceTest {
     }
 
     @Test
-    void login() {
+    void loginSuccesfully() {
+
+        //Arrange
+        UserModel u3 = new UserModel("user3","user3@mail.dk","password123","ROLE_CUSTOMER");
+        userService.registerUser(u3);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("user3@mail.dk");
+        loginRequest.setPassword("password123");
+
+        //Act
+        ResponseEntity<?> responseU3 = userService.login(loginRequest);
+        var actualResponseStatus = responseU3.getStatusCode();
+        var expectedResponseStatus = HttpStatus.OK;
+
+        //Assert
+        assertEquals(expectedResponseStatus, actualResponseStatus);
+    }
+
+    @Test
+    void loginFail() {
+
+        //Arrange
+        UserModel u4 = new UserModel("user4","user4@mail.dk","password123","ROLE_CUSTOMER");
+        userService.registerUser(u4);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("user4@mail.dk");
+        loginRequest.setPassword("password1234fejl");
+
+        //Act
+        ResponseEntity<?> responseU3 = userService.login(loginRequest);
+        var actualResponseStatus = responseU3.getStatusCode();
+        var expectedResponseStatus = HttpStatus.UNAUTHORIZED;
+
+        //Assert
+        assertEquals(expectedResponseStatus, actualResponseStatus);
     }
 }

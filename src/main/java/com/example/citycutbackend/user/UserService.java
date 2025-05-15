@@ -65,7 +65,7 @@ public class UserService {
             UserModel user = userOpt.get();
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 String token = jwtService.generateToken(user.getEmail(), user.getRole());
-                return ResponseEntity.ok(new LoginResponse(token);
+                return ResponseEntity.ok(new LoginResponse(token));
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
