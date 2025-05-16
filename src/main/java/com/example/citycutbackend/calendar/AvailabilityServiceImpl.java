@@ -2,6 +2,8 @@ package com.example.citycutbackend.calendar;
 
 import com.example.citycutbackend.treatments.Treatment;
 import com.example.citycutbackend.treatments.TreatmentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +18,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final TreatmentRepository treatmentRepository;
     private final TimeslotRepository timeslotRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AvailabilityServiceImpl.class);
 
     public AvailabilityServiceImpl(TreatmentRepository treatmentRepository, TimeslotRepository timeslotRepository) {
         this.treatmentRepository = treatmentRepository;
@@ -24,13 +27,19 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
 
     @Override
-    public List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId, List<Integer> selectedTreatmentIds, String date) {
+    public List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId,
+                                                                  List<Integer> selectedTreatmentIds, String date) {
         int totalAmountOfTimeslotsNeeded = 0;
+        logger.info("stylist id: " + stylistId);
+        logger.info("date: " + date);
         for (int id : selectedTreatmentIds) {
             Optional<Treatment> optionalTreatment = treatmentRepository.findById(id);
             if (optionalTreatment.isPresent()) {
                 Treatment treatment = optionalTreatment.get();
+                logger.info("treatment: " + treatment);
+                logger.info("amount of treatment timeslots: " + treatment.getTimeslotAmount());
                 totalAmountOfTimeslotsNeeded += treatment.getTimeslotAmount();
+                logger.info("totalAmountOfTimeslotsNeeded: " + totalAmountOfTimeslotsNeeded);
             }
         }
         List<Timeslot> allAvailableTimeslotsForDay = timeslotRepository.fetchAllAvailableTimeslotsForDay(LocalDate.parse(date));
@@ -52,7 +61,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                     currentTimeslot.getTime()));
 
         }
-
+        for(AvailableTimeslotDTO dto : availableTimeslots){
+            logger.info("timeslot available: " + dto);
+        }
         return availableTimeslots;
     }
 
