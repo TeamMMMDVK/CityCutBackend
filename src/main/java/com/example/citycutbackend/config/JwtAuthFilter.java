@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -37,15 +40,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            logger.info(token);
             if (jwtService.isTokenValid(token)) {
                 String email = jwtService.extractUsername(token);
                 Optional<UserModel> userOpt = userRepository.findByEmail(email);
                 if (userOpt.isPresent()) {
                     UserModel user = userOpt.get();
+
+                    logger.info("User found with email: {}", email);
+                    logger.info("User role: {}", user.getRole());
+
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(email, null, authorities);
+
+                    logger.debug("Authentication token created: {}", authToken);
+
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                    logger.info("Authentication set in SecurityContext");
+                } else {
+                    logger.warn("No user found with email: {}", email);
                 }
             }
         }
