@@ -20,7 +20,7 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     //For at test kan køre korrekt, må jeg lave Mock af disse bean ifm jwt ellers
     //vil det ikke compile korrekt. Når test kører så loades hele applikationen nemlig,
