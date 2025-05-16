@@ -20,7 +20,7 @@ class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     //For at test kan køre korrekt, må jeg lave Mock af disse bean ifm jwt ellers
     //vil det ikke compile korrekt. Når test kører så loades hele applikationen nemlig,
@@ -74,5 +74,45 @@ class UserServiceTest {
         //Assert
         assertEquals(expectedResponseStatus,actualResponseStatus);
         assertEquals(expectedResponseBody,actualResponseBody);
+    }
+
+    @Test
+    void loginSuccesfully() {
+
+        //Arrange
+        UserModel u3 = new UserModel("user3","user3@mail.dk","password123","ROLE_CUSTOMER");
+        userService.registerUser(u3);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("user3@mail.dk");
+        loginRequest.setPassword("password123");
+
+        //Act
+        ResponseEntity<?> responseU3 = userService.login(loginRequest);
+        var actualResponseStatus = responseU3.getStatusCode();
+        var expectedResponseStatus = HttpStatus.OK;
+
+        //Assert
+        assertEquals(expectedResponseStatus, actualResponseStatus);
+    }
+
+    @Test
+    void loginFail() {
+
+        //Arrange
+        UserModel u4 = new UserModel("user4","user4@mail.dk","password123","ROLE_CUSTOMER");
+        userService.registerUser(u4);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("user4@mail.dk");
+        loginRequest.setPassword("password1234fejl");
+
+        //Act
+        ResponseEntity<?> responseU3 = userService.login(loginRequest);
+        var actualResponseStatus = responseU3.getStatusCode();
+        var expectedResponseStatus = HttpStatus.UNAUTHORIZED;
+
+        //Assert
+        assertEquals(expectedResponseStatus, actualResponseStatus);
     }
 }
