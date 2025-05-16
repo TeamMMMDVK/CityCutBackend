@@ -29,7 +29,7 @@ public class UserService {
 
     public ResponseEntity<String> registerUser(UserModel user) {
 
-        ResponseEntity response = null; //variabel som bliver brugt til at returnere et passende HTTP response
+        ResponseEntity response; //variabel som bliver brugt til at returnere et passende HTTP response
         try {
             Optional<UserModel> existingUser = userRepository.findByEmail(user.getEmail());
 
