@@ -46,7 +46,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         List<AvailableTimeslotDTO> availableTimeslots = new ArrayList<>();
 
         if (totalAmountOfTimeslotsNeeded == 1) return allAvailableTimeslotsForDay.stream().map(timeslot ->
-                new AvailableTimeslotDTO(timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
+                new AvailableTimeslotDTO(timeslot.getId(),timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
 
 
         for (int i = 0; i <= allAvailableTimeslotsForDay.size() - totalAmountOfTimeslotsNeeded; i++) {
@@ -57,7 +57,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 isNextTimeslotRightAfterCurrent = toCheck.getTime().equals(currentTimeslot.getTime().plusMinutes(30 * j));
                 if(!isNextTimeslotRightAfterCurrent) break;
             }
-            if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getDate(),
+            if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getId(), currentTimeslot.getDate(),
                     currentTimeslot.getTime()));
 
         }
