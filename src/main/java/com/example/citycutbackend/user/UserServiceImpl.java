@@ -1,5 +1,6 @@
 package com.example.citycutbackend.user;
 
+import com.example.citycutbackend.bookings.CustomerServiceImpl;
 import com.example.citycutbackend.config.JwtService;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,12 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private JwtService jwtService;
+    private CustomerServiceImpl customerService;
 
-    public UserServiceImpl(UserRepository userRepository, JwtService jwtService) {
+    public UserServiceImpl(UserRepository userRepository, JwtService jwtService,CustomerServiceImpl customerService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.customerService = customerService;
     }
 
     public ResponseEntity<String> registerUser(UserModel user) {
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(hashPwd);//den hashede password bliver sat på user
 
             UserModel savedUser = userRepository.save(user); //data gemmes i db
+            customerService.createCustomerUser(savedUser); //Customer is created during Spring account creation
 
             if (savedUser.getId() > 0) {
                 response = ResponseEntity.status(HttpStatus.CREATED)

@@ -1,10 +1,12 @@
 package com.example.citycutbackend.calendar;
 
+import com.example.citycutbackend.bookings.Booking;
 import com.example.citycutbackend.treatments.Treatment;
 import com.example.citycutbackend.treatments.TreatmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -116,4 +118,5 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         boolean isBooked = Math.abs(hash) % 4 == 0;
         return !isBooked;
     }
+
 }

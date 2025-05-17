@@ -1,6 +1,8 @@
 package com.example.citycutbackend.calendar;
 
 import com.example.citycutbackend.bookings.Booking;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class Timeslot {
     private LocalTime time;
     @ManyToOne
     @JoinColumn(name = "booking_id")
+    @JsonBackReference("booking-timeslots")
     private Booking booking;
     boolean isAvailable;
     int duration;
