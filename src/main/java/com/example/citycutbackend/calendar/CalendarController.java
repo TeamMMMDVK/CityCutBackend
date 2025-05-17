@@ -3,7 +3,6 @@ package com.example.citycutbackend.calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -14,21 +13,10 @@ public class CalendarController {
     @Autowired
     private AvailabilityServiceImpl availabilityService;
 
-
-    @PostMapping("/availability/{year}/{month}")
-    public List<CheckAvailabilityDTO> getAvailability(@PathVariable int year, @PathVariable int month,
-                                                      @RequestBody CheckAvailabilityDTO request) {
-        return availabilityService.getAvailableTimeslotsForMonth(
-                year,
-                month,
-                request.getStylistId(),
-                request.getSelectedTreatmentIds()
-        );
+    @PostMapping("/availability")
+    public List<CalendarResponseDTO> checkAvailability(
+            @RequestParam("stylist") int stylistId,
+            @RequestBody CalendarRequestDTO request) {
+        return availabilityService.checkAvailabilityForDates(stylistId, request.getDates(), request.getTreatmentIds());
     }
-        @PostMapping("/check-availability")
-        public boolean checkAvailability(@RequestParam int stylistId,
-                                         @RequestParam LocalDate date,
-                                         @RequestBody CheckAvailabilityDTO request) {
-            return availabilityService.checkAvailabilityForDay(stylistId, date, request);
-        }
     }
