@@ -2,6 +2,7 @@ package com.example.citycutbackend.calendar;
 
 import com.example.citycutbackend.bookings.Booking;
 import com.example.citycutbackend.calendar.Timeslot;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class Stylist {
     private String name;
     private String description;
     @OneToMany(mappedBy = "stylist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("stylist-bookings")
     private List<Booking> bookings;
 }

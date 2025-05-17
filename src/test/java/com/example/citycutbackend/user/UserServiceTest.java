@@ -1,5 +1,6 @@
 package com.example.citycutbackend.user;
 
+import com.example.citycutbackend.bookings.CustomerRepository;
 import com.example.citycutbackend.config.JwtAuthFilter;
 import com.example.citycutbackend.config.JwtService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,8 @@ class UserServiceTest {
     private UserRepository userRepository;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     //For at test kan køre korrekt, må jeg lave Mock af disse bean ifm jwt ellers
     //vil det ikke compile korrekt. Når test kører så loades hele applikationen nemlig,
@@ -33,7 +36,9 @@ class UserServiceTest {
 
     @BeforeEach
     void setup() {
+        customerRepository.deleteAll();
         userRepository.deleteAll(); // Ryd databasen før hver test
+
     }
 
     @Test
