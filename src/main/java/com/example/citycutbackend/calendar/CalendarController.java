@@ -17,6 +17,7 @@ public class CalendarController {
     public List<CalendarResponseDTO> checkAvailability(
             @RequestParam("stylist") int stylistId,
             @RequestBody CalendarRequestDTO request) {
-        return availabilityService.checkAvailabilityForDates(stylistId, request.getDates(), request.getTreatmentIds());
+        return availabilityService.checkAvailabilityForDates(stylistId, request.getDates(),
+                request.getTreatmentIds());
     }
     }
