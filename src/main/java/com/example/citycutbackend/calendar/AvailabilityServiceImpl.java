@@ -79,17 +79,20 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         }
 
         for (String date : dates) {
-
             List<AvailableTimeslotDTO> availableTimeslotsForDay = getAvailableTimeslotsForDay(stylistId, treatmentIds, date);
-            if (availableTimeslotsForDay == null || availableTimeslotsForDay.isEmpty()) {
+            int available = availableTimeslotsForDay.size() + 1;
+            int diff = available - totalNeeded;
+
+            System.out.println("Date: " + date + ", available: " + available + ", totalNeeded: " + totalNeeded + ", diff: " + diff);
+
+            if (diff < -2) {
                 results.add(new CalendarResponseDTO(date, CalendarStatus.FULL, false));
-                continue;
+            } else if (diff <= -1) {
+                results.add(new CalendarResponseDTO(date, CalendarStatus.PARTIAL, true));
+            } else {
+                results.add(new CalendarResponseDTO(date, CalendarStatus.AVAILABLE, true));
             }
-
-            boolean isAvailable = availableTimeslotsForDay.size() >= totalNeeded;
-            CalendarStatus status = isAvailable ? CalendarStatus.AVAILABLE : CalendarStatus.PARTIAL;
-            results.add(new CalendarResponseDTO(date, status, isAvailable));
         }
-
         return results;
-    }}
+    }
+}
