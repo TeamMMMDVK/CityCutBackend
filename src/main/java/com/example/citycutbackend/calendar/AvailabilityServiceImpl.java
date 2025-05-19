@@ -68,26 +68,16 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
     public List<CalendarResponseDTO> checkAvailabilityForDates(int stylistId, List<String> dates, List<Integer> treatmentIds) {
         List<CalendarResponseDTO> results = new ArrayList<>();
-        if (dates == null || dates.isEmpty() || treatmentIds == null || treatmentIds.isEmpty())
-            return results;
-
-        int totalNeeded = 0;
-        for (Integer id : treatmentIds) {
-            Optional<Treatment> treatment = treatmentRepository.findById(id);
-            if (treatment.isPresent())
-                totalNeeded += treatment.get().getTimeslotAmount();
-        }
-
+//        if (dates == null || dates.isEmpty() || treatmentIds == null || treatmentIds.isEmpty())
+//            return results;
         for (String date : dates) {
             List<AvailableTimeslotDTO> availableTimeslotsForDay = getAvailableTimeslotsForDay(stylistId, treatmentIds, date);
-            int available = availableTimeslotsForDay.size() + 1;
-            int diff = available - totalNeeded;
+            int available = availableTimeslotsForDay.size();
+            logger.info("Date: " + date + ", available: " + available);
 
-            System.out.println("Date: " + date + ", available: " + available + ", totalNeeded: " + totalNeeded + ", diff: " + diff);
-
-            if (diff < -2) {
+            if (available == 0) {
                 results.add(new CalendarResponseDTO(date, CalendarStatus.FULL, false));
-            } else if (diff <= -1) {
+            } else if (available == 1) {
                 results.add(new CalendarResponseDTO(date, CalendarStatus.PARTIAL, true));
             } else {
                 results.add(new CalendarResponseDTO(date, CalendarStatus.AVAILABLE, true));
