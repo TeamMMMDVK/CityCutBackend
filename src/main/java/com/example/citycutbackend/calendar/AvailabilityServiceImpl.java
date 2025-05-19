@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,68 +54,38 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             Timeslot currentTimeslot = allAvailableTimeslotsForDay.get(i);
             boolean isNextTimeslotRightAfterCurrent = false;
             for (int j = 1; j < totalAmountOfTimeslotsNeeded; j++) {
-               Timeslot toCheck = allAvailableTimeslotsForDay.get(i + j);
+                Timeslot toCheck = allAvailableTimeslotsForDay.get(i + j);
                 isNextTimeslotRightAfterCurrent = toCheck.getTime().equals(currentTimeslot.getTime().plusMinutes(30 * j));
-                if(!isNextTimeslotRightAfterCurrent) break;
+                if (!isNextTimeslotRightAfterCurrent) break;
             }
+
             if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getId(), currentTimeslot.getDate(),
                     currentTimeslot.getTime()));
 
         }
-        for(AvailableTimeslotDTO dto : availableTimeslots){
+        for (AvailableTimeslotDTO dto : availableTimeslots) {
             logger.info("timeslot available: " + dto);
         }
         return availableTimeslots;
     }
+    public List<CalendarResponseDTO> checkAvailabilityForDates(int stylistId, List<String> dates, List<Integer> treatmentIds) {
+        List<CalendarResponseDTO> results = new ArrayList<>();
+//        if (dates == null || dates.isEmpty() || treatmentIds == null || treatmentIds.isEmpty())
+//            return results;
+        for (String date : dates) {
+            List<AvailableTimeslotDTO> availableTimeslotsForDay = getAvailableTimeslotsForDay(stylistId, treatmentIds, date);
+            int available = availableTimeslotsForDay.size();
+            logger.info("Date: " + date + ", available: " + available);
 
-
-    @Override
-    public List<CheckAvailabilityDTO> getAvailableTimeslotsForMonth(int year, int month, int stylistId, List<Integer> selectedTreatmentIds) {
-        YearMonth yearMonth = YearMonth.of(year, month);
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
-        List<CheckAvailabilityDTO> result = new ArrayList<>();
-
-        CheckAvailabilityDTO request = new CheckAvailabilityDTO(stylistId, selectedTreatmentIds, null, false);
-
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            boolean isAvailable = checkAvailabilityForDay(stylistId, date, request);
-            result.add(new CheckAvailabilityDTO(stylistId, selectedTreatmentIds, date.toString(), isAvailable));
+            if (available == 0) {
+                results.add(new CalendarResponseDTO(date, CalendarStatus.FULL, false));
+            } else if (available == 1) {
+                results.add(new CalendarResponseDTO(date, CalendarStatus.PARTIAL, true));
+            } else {
+                results.add(new CalendarResponseDTO(date, CalendarStatus.AVAILABLE, true));
+            }
         }
-
-        return result;
-    }
-
-
-    public int calculateTotalTime(List<Integer> selectedTreatmentIds) {
-        List<Treatment> treatments = treatmentRepository.findAllById(selectedTreatmentIds);
-        int total = 0;
-        for (Treatment treatment : treatments) {
-            total += treatment.getTimeslotAmount();
-        }
-        return total * 30;
-    }
-
-    public boolean checkAvailabilityForDay(int stylistId, LocalDate date, CheckAvailabilityDTO request) {
-        int totalTime = calculateTotalTime(request.getSelectedTreatmentIds());
-
-        // closed monday and sunday
-        int day = date.getDayOfWeek().getValue();
-        if (day == 1 || day == 7) {
-            return false;
-        }
-
-        int availableTimeInMinutes = 8 * 60;
-        int bookedTime = 0;
-
-        if (availableTimeInMinutes - bookedTime >= totalTime) {
-            return true;
-        }
-
-        // test data
-        int hash = (date.toString() + stylistId).hashCode();
-        boolean isBooked = Math.abs(hash) % 4 == 0;
-        return !isBooked;
+        return results;
     }
 
 }
