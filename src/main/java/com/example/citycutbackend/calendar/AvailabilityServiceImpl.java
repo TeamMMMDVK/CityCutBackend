@@ -1,10 +1,12 @@
 package com.example.citycutbackend.calendar;
 
+import com.example.citycutbackend.bookings.Booking;
 import com.example.citycutbackend.treatments.Treatment;
 import com.example.citycutbackend.treatments.TreatmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,7 +47,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         List<AvailableTimeslotDTO> availableTimeslots = new ArrayList<>();
 
         if (totalAmountOfTimeslotsNeeded == 1) return allAvailableTimeslotsForDay.stream().map(timeslot ->
-                new AvailableTimeslotDTO(timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
+                new AvailableTimeslotDTO(timeslot.getId(),timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
 
 
         for (int i = 0; i <= allAvailableTimeslotsForDay.size() - totalAmountOfTimeslotsNeeded; i++) {
@@ -56,9 +58,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 isNextTimeslotRightAfterCurrent = toCheck.getTime().equals(currentTimeslot.getTime().plusMinutes(30 * j));
                 if (!isNextTimeslotRightAfterCurrent) break;
             }
-            if (isNextTimeslotRightAfterCurrent)
-                availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getDate(),
-                        currentTimeslot.getTime()));
+
+            if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getId(), currentTimeslot.getDate(),
+                    currentTimeslot.getTime()));
 
         }
         for (AvailableTimeslotDTO dto : availableTimeslots) {
@@ -85,4 +87,5 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         }
         return results;
     }
+
 }
