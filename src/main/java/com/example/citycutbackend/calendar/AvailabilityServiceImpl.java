@@ -29,45 +29,85 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Override
     public List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId,
-                                                                  List<Integer> selectedTreatmentIds, String date) {
-        int totalAmountOfTimeslotsNeeded = 0;
+                                                                  List<Integer> selectedTreatmentIds,
+                                                                  String date) {
         logger.info("stylist id: " + stylistId);
         logger.info("date: " + date);
-        for (int id : selectedTreatmentIds) {
+
+        int totalSlotsNeeded = calculateTotalTimeslotsNeeded(selectedTreatmentIds);
+        List<Timeslot> allAvailableTimeslots = fetchAvailableTimeslots(date);
+
+        if (totalSlotsNeeded == 1) {
+            return convertToDTOs(allAvailableTimeslots);
+        }
+
+        List<AvailableTimeslotDTO> availableTimeslots = findTimeslotsInARow(allAvailableTimeslots, totalSlotsNeeded);
+
+        for (AvailableTimeslotDTO dto : availableTimeslots) {
+            logger.info("timeslot available: " + dto);
+        }
+
+        return availableTimeslots;
+    }
+
+    private int calculateTotalTimeslotsNeeded(List<Integer> treatmentIds) {
+        int total = 0;
+        for (int id : treatmentIds) {
             Optional<Treatment> optionalTreatment = treatmentRepository.findById(id);
             if (optionalTreatment.isPresent()) {
                 Treatment treatment = optionalTreatment.get();
                 logger.info("treatment: " + treatment);
                 logger.info("amount of treatment timeslots: " + treatment.getTimeslotAmount());
-                totalAmountOfTimeslotsNeeded += treatment.getTimeslotAmount();
-                logger.info("totalAmountOfTimeslotsNeeded: " + totalAmountOfTimeslotsNeeded);
+                total += treatment.getTimeslotAmount();
+                logger.info("totalAmountOfTimeslotsNeeded: " + total);
             }
         }
-        List<Timeslot> allAvailableTimeslotsForDay = timeslotRepository.fetchAllAvailableTimeslotsForDay(LocalDate.parse(date));
-        List<AvailableTimeslotDTO> availableTimeslots = new ArrayList<>();
-
-        if (totalAmountOfTimeslotsNeeded == 1) return allAvailableTimeslotsForDay.stream().map(timeslot ->
-                new AvailableTimeslotDTO(timeslot.getId(),timeslot.getDate(), timeslot.getTime())).collect(Collectors.toList());
-
-
-        for (int i = 0; i <= allAvailableTimeslotsForDay.size() - totalAmountOfTimeslotsNeeded; i++) {
-            Timeslot currentTimeslot = allAvailableTimeslotsForDay.get(i);
-            boolean isNextTimeslotRightAfterCurrent = false;
-            for (int j = 1; j < totalAmountOfTimeslotsNeeded; j++) {
-                Timeslot toCheck = allAvailableTimeslotsForDay.get(i + j);
-                isNextTimeslotRightAfterCurrent = toCheck.getTime().equals(currentTimeslot.getTime().plusMinutes(30 * j));
-                if (!isNextTimeslotRightAfterCurrent) break;
-            }
-
-            if(isNextTimeslotRightAfterCurrent)availableTimeslots.add(new AvailableTimeslotDTO(currentTimeslot.getId(), currentTimeslot.getDate(),
-                    currentTimeslot.getTime()));
-
-        }
-        for (AvailableTimeslotDTO dto : availableTimeslots) {
-            logger.info("timeslot available: " + dto);
-        }
-        return availableTimeslots;
+        return total;
     }
+
+    private List<Timeslot> fetchAvailableTimeslots(String date) {
+        return timeslotRepository.fetchAllAvailableTimeslotsForDay(LocalDate.parse(date));
+    }
+
+    private List<AvailableTimeslotDTO> convertToDTOs(List<Timeslot> timeslots) {
+        return timeslots.stream()
+                .map(ts -> new AvailableTimeslotDTO(ts.getId(), ts.getDate(), ts.getTime()))
+                .collect(Collectors.toList());
+    }
+
+    private List<AvailableTimeslotDTO> findTimeslotsInARow(List<Timeslot> timeslots, int neededSlots) {
+        List<AvailableTimeslotDTO> available = new ArrayList<>();
+
+        if (neededSlots <= 0 || timeslots.size() < neededSlots) {
+            return available;
+        }
+
+        for (int i = 0; i <= timeslots.size() - neededSlots; i++) {
+            Timeslot start = timeslots.get(i);
+            boolean allInARow = true;
+
+            for (int j = 1; j < neededSlots; j++) {
+                if (i + j >= timeslots.size()) {
+                    allInARow = false;
+                    break;
+                }
+
+                Timeslot next = timeslots.get(i + j);
+                if (!next.getTime().equals(start.getTime().plusMinutes(30L * j))) {
+                    allInARow = false;
+                    break;
+                }
+            }
+
+            if (allInARow) {
+                available.add(new AvailableTimeslotDTO(start.getId(), start.getDate(), start.getTime()));
+            }
+        }
+
+        return available;
+    }
+
+
     public List<CalendarResponseDTO> checkAvailabilityForDates(int stylistId, List<String> dates, List<Integer> treatmentIds) {
         List<CalendarResponseDTO> results = new ArrayList<>();
 //        if (dates == null || dates.isEmpty() || treatmentIds == null || treatmentIds.isEmpty())
