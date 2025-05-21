@@ -14,7 +14,7 @@ import java.util.Date;
 //Denne klasse er ansvarlig foroprettelse, validering og aflæsning af JWT-tokens
 //header = algoritmen HS512 og typen JWT
 //Payload = alle oplysninger om brugeren og token metadata
-//Signature = viser at tokenet ikke er blevet ændret undervejs, består af hash af header+payload+brug af secret key
+//Signature = viser at token ikke er blevet ændret undervejs, består af hash af header+payload+brug af secret key
 
 @Component
 public class JwtService {
