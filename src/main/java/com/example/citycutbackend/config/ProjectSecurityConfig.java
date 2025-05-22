@@ -36,10 +36,16 @@ public class ProjectSecurityConfig {
                 //CORS (Cross-Origin Resource Sharing) er en browser-mekanisme, der kontrollerer, hvordan ressourcer kan deles mellem forskellige domæner.
                 //Det er en sikkerhedsfunktion, der skal konfigureres korrekt for at tillade legitim kommunikation mellem domæner.
                 .authorizeHttpRequests((request) -> request
-                                .requestMatchers("/api/v1/user/test1", "/api/v1/user/register","/index.html","/api/v1/user/login",
-                                        "/api/v1/treatments", "/api/v1/timeslots", "/api/v1/booking/").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
-                                .requestMatchers("/api/v1/treatments/add").hasRole("ADMIN") //TODO: tilføj rette endpoints
-                                .requestMatchers("/api/v1/booking", "/api/v1/booking/").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
+                        .requestMatchers("/api/v1/user/test1",
+                                "/api/v1/user/register",
+                                "/index.html",
+                                "/api/v1/user/login",
+                                "/api/v1/treatments",
+                                "/api/v1/timeslots",
+                                "/api/v1/booking/").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
+                        .requestMatchers("/api/v1/treatments/add").hasRole("ADMIN") //TODO: tilføj rette endpoints
+                        .requestMatchers("/api/v1/booking", "/api/v1/booking/").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
+                        .anyRequest().permitAll() //endpoints som ikke er medtaget kræver ikke login / token
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         var obj = http.build(); //denne afslutter konfigurationen og opsætningen
@@ -49,7 +55,7 @@ public class ProjectSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:63342","https://localhost:8080", "http://127.0.0.1:8080")); // Tilladte domæner
+        configuration.setAllowedOrigins(List.of("http://localhost:63342", "https://localhost:8080", "http://127.0.0.1:8080")); // Tilladte domæner
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Tilladte metoder
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Tilladte headers
         configuration.setAllowCredentials(true); // Tillad credentials (f.eks. cookies, autorisation)
