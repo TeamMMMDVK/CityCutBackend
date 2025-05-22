@@ -37,6 +37,8 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         int totalSlotsNeeded = calculateTotalTimeslotsNeeded(selectedTreatmentIds);
         List<Timeslot> allAvailableTimeslots = fetchAvailableTimeslots(date);
 
+        logger.info("totalSlotsNeeded: " +totalSlotsNeeded);
+
         if (totalSlotsNeeded == 1) {
             return convertToDTOs(allAvailableTimeslots);
         }
