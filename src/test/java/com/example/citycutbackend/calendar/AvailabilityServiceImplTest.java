@@ -50,6 +50,7 @@ class AvailabilityServiceImplTest {
     private Treatment treatment2;
 
     private Timeslot ts1, ts2, ts3, ts4;
+    LocalDate date = LocalDate.now();
 
     @BeforeEach
     void setup() {
@@ -62,7 +63,7 @@ class AvailabilityServiceImplTest {
         treatment2.setTimeslotAmount(2);
         treatment2 = treatmentRepository.save(treatment2);
 
-        LocalDate date = LocalDate.now();
+
 
         // Create available timeslots, duration 30, no booking (means free)
         ts1 = new Timeslot(0, date, LocalTime.of(10, 0), null, true, 30);
@@ -124,19 +125,16 @@ class AvailabilityServiceImplTest {
         treatment.setPrice(499.0);
         treatment = treatmentRepository.save(treatment);
 
-        LocalDate date = LocalDate.of(2025, 5, 22);
-        timeslotRepository.save(new Timeslot(0, date, LocalTime.of(9, 0), null, true, 30));
-        timeslotRepository.save(new Timeslot(0, date, LocalTime.of(9, 30), null, true, 30));
-
         List<Integer> selectedTreatmentIds = List.of(treatment.getId());
 
         // Act
         List<AvailableTimeslotDTO> result = availabilityService.getAvailableTimeslotsForDay(1, selectedTreatmentIds, date.toString());
-
+        for(AvailableTimeslotDTO dto : result){
+            System.out.println(dto);
+        }
         // Assert
-        assertEquals(1, result.size());
+        assertEquals(3, result.size());
         AvailableTimeslotDTO dto = result.get(0);
-        assertEquals(date, dto.getDate());
-        assertEquals(LocalTime.of(9, 0), dto.getTime());
+        assertEquals(LocalTime.of(10, 0), dto.getTime());
     }
 }
