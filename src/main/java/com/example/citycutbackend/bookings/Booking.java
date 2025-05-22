@@ -2,6 +2,7 @@ package com.example.citycutbackend.bookings;
 
 import com.example.citycutbackend.calendar.Stylist;
 import com.example.citycutbackend.calendar.Timeslot;
+import com.example.citycutbackend.treatments.Treatment;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -31,4 +32,12 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("booking-timeslots")
     private List<Timeslot> timeslots;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name="booking_treatments",
+            joinColumns = @JoinColumn(name="booking_id"),
+            inverseJoinColumns = @JoinColumn(name = "treatment_id")
+    )
+    @JsonManagedReference("booking-treatments")
+    private List<Treatment> treatments;
 }

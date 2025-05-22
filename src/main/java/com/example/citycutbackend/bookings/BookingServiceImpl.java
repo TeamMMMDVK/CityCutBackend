@@ -39,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setTimeslots(timeslots);
 
         List<Treatment> treatments = treatmentRepository.findAllById(dto.getTreatmentIds());
-        //booking.setTreatments; //No treatments on Booking entity?
+        booking.setTreatments(treatments);
 
         //booking.setCustomer(customer); //Find customer by ID
         int customerID = customerRepository.findCustomerByUserID(dto.getUserID());
