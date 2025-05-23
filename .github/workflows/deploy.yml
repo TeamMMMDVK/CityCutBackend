@@ -12,6 +12,12 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v3
 
+      - name: Vis mappestruktur i root
+        run: ls -l
+
+      - name: Vis mappestruktur i CityCutBackend
+        run: ls -l CityCutBackend || echo "Folder CityCutBackend findes ikke"
+
       - name: Installer Java og Maven
         uses: actions/setup-java@v3
         with:
