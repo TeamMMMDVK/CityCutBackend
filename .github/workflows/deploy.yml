@@ -27,7 +27,9 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "target/*.jar"
+          source: |
+            Dockerfile
+            target/*.jar
           target: "/root/app"
 
       - name: SSH og genstart Docker container
