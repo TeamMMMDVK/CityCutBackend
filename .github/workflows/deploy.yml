@@ -21,6 +21,9 @@ jobs:
       - name: Byg med Maven
         run: mvn clean package -DskipTests
 
+      - name: vis target-folder
+        run: ls -l target/
+
       - name: Copy .jar til server via scp
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -29,7 +32,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: |
             Dockerfile
-            target/*.jar
+            target/CityCutBackend-0.0.1-SNAPSHOT.jar
           target: "/root/app"
 
       - name: SSH og genstart Docker container
