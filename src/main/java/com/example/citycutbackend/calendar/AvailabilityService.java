@@ -6,4 +6,9 @@ public interface AvailabilityService {
     List<AvailableTimeslotDTO> getAvailableTimeslotsForDay(int stylistId, List<Integer> selectedTreatmentIds, String date);
 
     List<CalendarResponseDTO> checkAvailabilityForDates(int stylistId, List<String> dates, List<Integer> treatmentIds);
+
+    void addSlot(TimeslotDTO dto);
+
+    void addDefaultSlots(TimeslotDTO dto);
+
 }

@@ -45,7 +45,8 @@ public class ProjectSecurityConfig {
                                 "/api/v1/booking/").permitAll() //dette betyder at alle kan tilgå disse sider uden login TODO: tilføj rette endpoints
                         .requestMatchers("/api/v1/treatments/add").hasRole("ADMIN") //TODO: tilføj rette endpoints
                         .requestMatchers("/api/v1/booking", "/api/v1/booking/").hasAnyRole("ADMIN", "CUSTOMER") //TODO: tilføj rette endpoints
-                        .anyRequest().permitAll() //endpoints som ikke er medtaget kræver ikke login / token
+                        .requestMatchers("/api/v1/timeslots/**").hasRole("ADMIN")
+                        .anyRequest().authenticated() //endpoints som ikke er medtaget kræver ikke login / token
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         var obj = http.build(); //denne afslutter konfigurationen og opsætningen

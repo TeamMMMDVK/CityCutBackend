@@ -66,10 +66,10 @@ class AvailabilityServiceImplTest {
 
 
         // Create available timeslots, duration 30, no booking (means free)
-        ts1 = new Timeslot(0, date, LocalTime.of(10, 0), null, true, 30);
-        ts2 = new Timeslot(0, date, LocalTime.of(10, 30), null, true, 30);
-        ts3 = new Timeslot(0, date, LocalTime.of(11, 0), null, true, 30);
-        ts4 = new Timeslot(0, date, LocalTime.of(11, 30), null, true, 30);
+        ts1 = new Timeslot(0, date, LocalTime.of(10, 0), null, null, null, true, 30);
+        ts2 = new Timeslot(0, date, LocalTime.of(10, 30), null, null, null, true, 30);
+        ts3 = new Timeslot(0, date, LocalTime.of(11, 0), null, null, null, true, 30);
+        ts4 = new Timeslot(0, date, LocalTime.of(11, 30), null, null, null, true, 30);
 
         ts1 = timeslotRepository.save(ts1);
         ts2 = timeslotRepository.save(ts2);

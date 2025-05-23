@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +21,13 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final TreatmentRepository treatmentRepository;
     private final TimeslotRepository timeslotRepository;
+    private final StylistRepository stylistRepository;
     private static final Logger logger = LoggerFactory.getLogger(AvailabilityServiceImpl.class);
 
-    public AvailabilityServiceImpl(TreatmentRepository treatmentRepository, TimeslotRepository timeslotRepository) {
+    public AvailabilityServiceImpl(TreatmentRepository treatmentRepository, TimeslotRepository timeslotRepository, StylistRepository stylistRepository) {
         this.treatmentRepository = treatmentRepository;
         this.timeslotRepository = timeslotRepository;
+        this.stylistRepository = stylistRepository;
     }
 
 
@@ -126,6 +130,36 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             }
         }
         return results;
+    }
+
+    @Override
+    public void addSlot(TimeslotDTO dto) {
+        Stylist stylist = stylistRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Stylist not found"));
+
+        Timeslot slot = new Timeslot();
+        slot.setStylist(stylist);
+        slot.setDayOfWeek(DayOfWeek.valueOf(dto.getDayOfWeek()));
+        slot.setTime(LocalTime.parse(dto.getStartTime()));
+
+        timeslotRepository.save(slot);
+    }
+
+    @Override
+    public void addDefaultSlots(TimeslotDTO dto) {
+        Stylist stylist = stylistRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("Stylist not found"));
+
+        DayOfWeek day = DayOfWeek.valueOf(dto.getDayOfWeek());
+
+        for (int hour = 9; hour < 16; hour++) {
+            Timeslot slot = new Timeslot();
+            slot.setStylist(stylist);
+            slot.setDayOfWeek(day);
+            slot.setTime(LocalTime.of(hour, 0));
+
+            timeslotRepository.save(slot);
+        }
     }
 
 }
