@@ -44,4 +44,6 @@ jobs:
             docker stop backend || true
             docker rm backend || true
             docker build -t citycut-backend .
-            docker run -d --name backend --network citycut-net -p 8080:8080 citycut-backend
+            docker run -d --name backend --network citycut-net -p 8080:8080 \
+              -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET }} \
+            citycut-backend
