@@ -1,0 +1,44 @@
+name: Deploy to Hetzner
+
+on:
+  push:
+    branches: [ "DeploymentHetzner" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      - name: Installer Java og Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Byg med Maven
+        run: mvn clean package -DskipTests
+
+      - name: Copy .jar til server via scp
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "target/*.jar"
+          target: "/root/app"
+
+      - name: SSH og genstart Docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/app
+            docker stop backend || true
+            docker rm backend || true
+            docker build -t citycut-backend .
+            docker run -d --name backend --network citycut-net -p 8080:8080 citycut-backend
