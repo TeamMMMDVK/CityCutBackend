@@ -45,5 +45,8 @@ jobs:
             docker rm backend || true
             docker build -t citycut-backend .
             docker run -d --name backend --network citycut-net -p 8080:8080 \
+              -e SPRING_DATASOURCE_URL=jdbc:mysql://DB-CityCut:3306/citycut \
+              -e SPRING_DATASOURCE_USERNAME=citycut \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
               -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET }} \
             citycut-backend
