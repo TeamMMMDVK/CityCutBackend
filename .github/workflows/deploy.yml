@@ -48,5 +48,5 @@ jobs:
               -e SPRING_DATASOURCE_URL=jdbc:mysql://DB-CityCut:3306/citycut \
               -e SPRING_DATASOURCE_USERNAME=citycut \
               -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET }} \
+              -e JWT_SECRET_KEY=${{ secrets.JWT_SECRETS }} \
             citycut-backend
